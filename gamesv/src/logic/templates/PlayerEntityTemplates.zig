@@ -19,7 +19,10 @@ pub fn createPlayerSceneEntity(
     const followers = try alloc.gpa.dupe(i32, &[_]i32{ 0, 1, 2, 3, 4, 5 });
     const entity = try scene.spawn(alloc.gpa, fs, .{
         Entity.FollowerComponent{ .list = followers },
-        Entity.AttributeComponent{ .base_prop = try assets.tables.getProps(390077025, alloc.gpa) },
+        try Entity.AttributeComponent.create(
+            try assets.tables.getProps(390077025, alloc.arena),
+            alloc.gpa,
+        ),
         Entity.ConfigComponent{
             .camp = 0,
             .state = .default,
@@ -52,7 +55,10 @@ pub fn createSceneBattleEntity(
     assets: *const Assets,
 ) !Entity {
     const entity = try scene.spawn(alloc.gpa, fs, .{
-        Entity.AttributeComponent{ .base_prop = try assets.tables.getProps(390077025, alloc.gpa) },
+        try Entity.AttributeComponent.create(
+            try assets.tables.getProps(390077025, alloc.arena),
+            alloc.gpa,
+        ),
         Entity.ConfigComponent{
             .camp = 0,
             .state = .default,

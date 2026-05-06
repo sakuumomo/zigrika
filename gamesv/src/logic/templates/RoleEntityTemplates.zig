@@ -53,7 +53,10 @@ pub fn createConcomitantEntity(
         },
         Entity.ActorVisibleMarker{},
         Entity.FightBuffComponent{},
-        Entity.AttributeComponent{ .base_prop = try alloc.gpa.dupe(i32, role_info.base_prop) },
+        try Entity.AttributeComponent.create(
+            try alloc.arena.dupe(i32, role_info.base_prop),
+            alloc.gpa,
+        ),
         Entity.SummonerComponent{
             .player_id = player_id,
             .summon_cfg_id = summon_cfg.Id,
@@ -136,13 +139,12 @@ pub fn createRoleEntity(
         Entity.PlayerIDComponent{ .id = player_id },
         Entity.ActorVisibleMarker{},
         Entity.DirectControlMarker{},
-        Entity.AttributeComponent{ .base_prop = try alloc.gpa.dupe(i32, role_info.base_prop) },
+        try Entity.AttributeComponent.create(
+            try alloc.arena.dupe(i32, role_info.base_prop),
+            alloc.gpa,
+        ),
         Entity.ConcomitantComponent{},
-        Entity.PassiveGaSkillComponent{
-            .skill_component_pb = try alloc.gpa.dupe(pb.SkillComponentPb, &.{
-                .{ .SkillId = 100005, .ConstateId = -1 },
-            }),
-        },
+        Entity.PassiveGaSkillComponent{},
         Entity.FsmComponent{
             .hash_code = 340617276,
             .common_hash_code = 2075276641,
@@ -284,9 +286,41 @@ pub fn createRoleEntity(
     alloc.gpa.free(fight_buff_infos);
     const fight_buff_infos_filtered = try filtered.toOwnedSlice(alloc.gpa);
 
+    var passive_skills: std.ArrayList(pb.SkillComponentPb) = .empty;
+    defer passive_skills.deinit(alloc.gpa);
+
+    var role_str_buf: [4]u8 = undefined;
+    const role_str = std.fmt.bufPrint(&role_str_buf, "{d}", .{role}) catch unreachable;
+
+    for (assets.tables.entity_skill_preload.items) |entry| {
+        var skill_str_buf: [10]u8 = undefined;
+        const skill_str = std.fmt.bufPrint(&skill_str_buf, "{d}", .{entry.SkillId}) catch continue;
+        if (!std.mem.startsWith(u8, skill_str, role_str)) continue;
+        try passive_skills.append(alloc.gpa, .{ .SkillId = entry.SkillId, .ConstateId = -1 });
+    }
+
+    for (fight_buff_infos_filtered) |buff_info| {
+        const buff = assets.tables.buff.getDataById(@intCast(buff_info.BuffId)) orelse continue;
+        if (buff.ExtraEffectID != 35) continue;
+        const skill_id_list = if (buff.ExtraEffectParameters.len > 0)
+            buff.ExtraEffectParameters[0]
+        else
+            continue;
+
+        var it = std.mem.splitScalar(u8, skill_id_list, '|');
+        while (it.next()) |s| {
+            const trimmed = std.mem.trim(u8, s, " ");
+            const id = std.fmt.parseInt(i32, trimmed, 10) catch continue;
+            try passive_skills.append(alloc.gpa, .{ .SkillId = id, .ConstateId = -1 });
+        }
+    }
+
+    try passive_skills.append(alloc.gpa, .{ .SkillId = 100005, .ConstateId = -1 });
+
     const slice = scene.entities.slice();
 
     slice.items(.buffs)[entity.index].?.fight_buff_infos = fight_buff_infos_filtered;
+    slice.items(.passive_ga_skill)[entity.index].?.skill_component_pb = try passive_skills.toOwnedSlice(alloc.gpa);
     slice.items(.concomitant)[entity.index].?.custom_entity_ids = blk: {
         var ids = try std.ArrayListUnmanaged(i64).initCapacity(alloc.gpa, concomitants.items.len);
         for (concomitants.items) |e| ids.appendAssumeCapacity(e.net_id);
@@ -298,9 +332,6 @@ pub fn createRoleEntity(
     const storage = scene.entities.get(entity.index);
     try storage.save(alloc.arena, fs, player_id, scene.instance_id);
     log.debug("buffs: {any}", .{storage.buffs});
-
-    slice.items(.attribute)[entity.index].?.base_prop[60] =
-        slice.items(.attribute)[entity.index].?.base_prop[59];
 
     return entity;
 }
