@@ -6,3 +6,6 @@ proto/pb/*
 # Persistent state
 state/account/
 state/player/
+
+# BinData
+assets/BinData
