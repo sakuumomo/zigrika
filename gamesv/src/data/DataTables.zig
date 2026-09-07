@@ -384,7 +384,7 @@ pub fn getMotorcycleConfigId(tables: *const DataTables) ?i32 {
 
 const BuffAdditionEntry = @import("../logic/events.zig").BuffAdditionEntry;
 
-fn is_active_cond(buff: DataTables.Buff) bool {
+fn is_active_cond(buff: Buff) bool {
     // is_buff_active check from wicked
     return buff.ModifierMagnitude.len == 0 and
         buff.BuffAction.len == 0 and
@@ -509,7 +509,7 @@ pub fn getRoleAutoBuffs(
                 if (!valid) continue;
             }
 
-            try results.append(gpa, .{ .id = buff.Id, .is_active = is_active_cond(buff) });
+            try results.append(gpa, .{ .id = buff.Id, .is_active = is_active_cond(buff.*) });
         }
     }
 
