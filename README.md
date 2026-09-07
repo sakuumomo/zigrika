@@ -19,8 +19,9 @@ NOTE: If the game is crashing immediately upon opening while PS is open, try edi
 ## Setup
 ### BinData Setup
 1. Go to [BinData repository's releases](https://git.xeondev.com/WavyRooms/zigrika-bindata/releases) and grab the latest release corresponding to the server's/client's version.
-2. Put the zip in `assets` and unzip it, it should create a BinData folder.
-3. Delete the zip.
+2. Go to `assets` in `zigrika` and delete the old BinData folder if there is one.
+3. Put the zip in `assets` and unzip it, it should create a BinData folder.
+4. Delete the zip.
 ### Building from sources
 #### Linux
 ```sh

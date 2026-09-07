@@ -384,6 +384,19 @@ pub fn getMotorcycleConfigId(tables: *const DataTables) ?i32 {
 
 const BuffAdditionEntry = @import("../logic/events.zig").BuffAdditionEntry;
 
+fn is_active_cond(buff: DataTables.Buff) bool {
+    // is_buff_active check from wicked
+    return buff.ModifierMagnitude.len == 0 and
+        buff.BuffAction.len == 0 and
+        buff.OngoingTagRequirements.len == 0 and
+        buff.OngoingTagIgnores.len == 0 and
+        buff.RemovalTagRequirements.len == 0 and
+        buff.RemovalTagIgnores.len == 0 and
+        buff.ApplicationSourceTagIgnores.len == 0 and
+        buff.ApplicationTagIgnores.len == 0 and
+        buff.ExtraEffectRequirements.len == 0;
+}
+
 pub fn getRoleAutoBuffs(
     tables: *const DataTables,
     role_id: i32,
@@ -438,18 +451,14 @@ pub fn getRoleAutoBuffs(
 
             for (init_info.FightBuffs) |buff_id| {
                 const buff = tables.buff.getDataById(buff_id) orelse continue;
-                const is_active =
-                    buff.ModifierMagnitude.len == 0 and
-                    buff.BuffAction.len == 0 and
-                    buff.OngoingTagRequirements.len == 0 and
-                    buff.OngoingTagIgnores.len == 0 and
-                    buff.RemovalTagRequirements.len == 0 and
-                    buff.RemovalTagIgnores.len == 0 and
-                    buff.ApplicationSourceTagIgnores.len == 0 and
-                    buff.ApplicationTagIgnores.len == 0 and
-                    buff.ExtraEffectRequirements.len == 0;
+                try results.append(gpa, .{ .id = buff_id, .is_active = is_active_cond(buff) });
+            }
+        }
 
-                try results.append(gpa, .{ .id = buff_id, .is_active = is_active });
+        if (init_info.AdditionalFightBuffs) |add_role_buffs| {
+            for (add_role_buffs) |buff_id| {
+                const buff = tables.buff.getDataById(buff_id) orelse continue;
+                try results.append(gpa, .{ .id = buff_id, .is_active = is_active_cond(buff) });
             }
         }
     }
@@ -500,19 +509,7 @@ pub fn getRoleAutoBuffs(
                 if (!valid) continue;
             }
 
-            // is_buff_active check from wicked
-            const is_active =
-                buff.ModifierMagnitude.len == 0 and
-                buff.BuffAction.len == 0 and
-                buff.OngoingTagRequirements.len == 0 and
-                buff.OngoingTagIgnores.len == 0 and
-                buff.RemovalTagRequirements.len == 0 and
-                buff.RemovalTagIgnores.len == 0 and
-                buff.ApplicationSourceTagIgnores.len == 0 and
-                buff.ApplicationTagIgnores.len == 0 and
-                buff.ExtraEffectRequirements.len == 0;
-
-            try results.append(gpa, .{ .id = buff.Id, .is_active = is_active });
+            try results.append(gpa, .{ .id = buff.Id, .is_active = is_active_cond(buff) });
         }
     }
 
