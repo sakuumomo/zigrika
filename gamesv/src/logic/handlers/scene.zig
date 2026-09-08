@@ -645,8 +645,6 @@ pub fn afterSceneJoin(
     try conn.push(alloc.gpa, io, pb.JSPatchNotify{ .Content = watermark_js });
 
     const patch_files = [_][]const u8{
-        "assets/scripts/join_scene_patches/goon_camera.js",
-        "assets/scripts/join_scene_patches/camera_bindata.js",
         "assets/scripts/join_scene_patches/censorshipfix.js",
         "assets/scripts/join_scene_patches/debug_disable.js",
         "assets/scripts/join_scene_patches/main_watermask_disable.js",
