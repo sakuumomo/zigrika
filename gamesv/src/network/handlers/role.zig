@@ -313,7 +313,7 @@ pub fn onRoleElementChangeRequest(
     txn.respond(.{ .ErrorCode = .Success });
 }
 
-pub fn onSwitchRoleRequest(
+pub fn SwitchRoleRequest(
     txn: *dispatch.CombatRequestTxn(.SwitchRoleRequest),
     scene: *Scene,
     fs: *FileSystem,
