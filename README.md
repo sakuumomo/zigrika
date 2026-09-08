@@ -22,22 +22,21 @@ NOTE: If the game is crashing immediately upon opening while PS is open, try edi
 2. Go to `assets` in `zigrika` and delete the old BinData folder if there is one.
 3. Put the zip in `assets` and unzip it, it should create a BinData folder.
 4. Delete the zip.
-### Building from sources
+### Building from source
+Make sure Git is installed before running the commands below.
+
 #### Linux
 ```sh
 git clone https://git.xeondev.com/WavyRooms/zigrika
 cd zigrika
 . ./envrc # In case you don't have zig installed, `envrc` can do this for you.
-zig build run-cfgsv &
-zig build run-loginsv &
-zig build run-gamesv
+zig build serve-all
 ```
 #### Windows
 ```sh
-# Assuming you have git installed and are using cmd or powershell.
 git clone https://git.xeondev.com/WavyRooms/zigrika
 cd zigrika
-start start-zigrika.cmd
+.\start-zigrika.cmd
 ```
 
 ### Logging in
