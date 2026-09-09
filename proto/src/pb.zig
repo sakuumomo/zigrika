@@ -12654,6 +12654,51 @@ pub const CalabashSkinTakeOnResponse = struct {
     ErrorCode: ?ErrorCode = null,
     SkinId: i32 = 0,
 };
+pub const CameraParamInfo = struct {
+    pub const default: @This() = .{};
+    CameraMode: i32 = 0,
+    PitchValue: f32 = 0,
+    YawValue: f32 = 0,
+    RollValue: f32 = 0,
+    PosX: f32 = 0,
+    PosY: f32 = 0,
+    PosZ: f32 = 0,
+    Fov: i32 = 0,
+    FocusDistance: i32 = 0,
+    BlurRadius: i32 = 0,
+    CameraTiltAngle: i32 = 0,
+    Weather: i32 = 0,
+    Atmosphere: i32 = 0,
+    WindDirection: i32 = 0,
+};
+pub const CameraSettingInfo = struct {
+    pub const default: @This() = .{};
+    CameraParam: ?CameraParamInfo = null,
+};
+pub const CameraSettingQueryRequest = struct {
+    pub const default: @This() = .{};
+};
+pub const CameraSettingQueryResponse = struct {
+    pub const default: @This() = .{};
+    ErrorCode: ?ErrorCode = null,
+    CameraSetting: ?CameraSettingInfo = null,
+};
+pub const CameraSettingModifyRequest = struct {
+    pub const default: @This() = .{};
+    CameraSetting: ?CameraSettingInfo = null,
+};
+pub const CameraSettingModifyResponse = struct {
+    pub const default: @This() = .{};
+    ErrorCode: ?ErrorCode = null,
+};
+pub const SelfPortraitStateRequest = struct {
+    pub const default: @This() = .{};
+    State: i32 = 0,
+};
+pub const SelfPortraitStateResponse = struct {
+    pub const default: @This() = .{};
+    ErrorCode: ?ErrorCode = null,
+};
 pub const ChatContentType = enum(i32) {
     pub const default: @This() = @field(@This(), std.meta.fieldNames(@This())[0]);
     Text = 0,
@@ -13079,6 +13124,22 @@ pub const CombatReceivePackNotify = struct {
 };
 pub const CombatMaxCaseMessageRequest = struct {
     pub const default: @This() = .{};
+};
+pub const CombatMessagePrefixInfoRequest = struct {
+    pub const default: @This() = .{};
+    Id: []const u8 = "",
+};
+pub const CombatMessagePrefixInfoResponse = struct {
+    pub const default: @This() = .{};
+    PrefixInfo: []const u8 = "",
+};
+pub const CombatMessagePostInfoRequest = struct {
+    pub const default: @This() = .{};
+    PostId: []const u8 = "",
+};
+pub const CombatMessagePostInfoResponse = struct {
+    pub const default: @This() = .{};
+    PostInfo: []const u8 = "",
 };
 pub const EntityLoadCompleteNotify = struct {
     pub const default: @This() = .{};
@@ -14671,6 +14732,9 @@ pub const CombatValDecayBeginNotify = struct {
 pub const SquadPropChangedNotify = struct {
     pub const default: @This() = .{};
     Attributes: std.ArrayList(GameplayAttributeData) = .empty,
+};
+pub const ScreenShotTakenPush = struct {
+    pub const default: @This() = .{};
 };
 pub const ControlType = enum(i32) {
     pub const default: @This() = @field(@This(), std.meta.fieldNames(@This())[0]);

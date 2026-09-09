@@ -4,7 +4,7 @@ const EventDefine_1 = require("../Game/Common/Event/EventDefine.js");
 for (const item of ModelManager_1.ModelManager.SceneTeamModel.GetTeamItems()) {
   const entity = item.EntityHandle?.Entity;
   if (entity?.Valid) {
-    const skill_cd_comp = entity.GetComponent(224);
+    const skill_cd_comp = entity.GetComponent(227);
     if (skill_cd_comp) {
       for (const skill_id of skill_cd_comp.qzr.keys()) {
         skill_cd_comp.ModifyCdTime([String(skill_id)], -999999, -1);
@@ -15,7 +15,7 @@ for (const item of ModelManager_1.ModelManager.SceneTeamModel.GetTeamItems()) {
   for (const item of ModelManager_1.ModelManager.SceneTeamModel.aPr) {
     const entity = item.EntityHandle?.Entity;
     if (!entity?.Valid) continue;
-    const comp = entity.CheckGetComponent(103);
+    const comp = entity.CheckGetComponent(106);
     if (!comp) continue;
     comp.Irn = -1;
     EventSystem_1.EventSystem.EmitWithTarget(

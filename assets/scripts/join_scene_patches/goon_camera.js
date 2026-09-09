@@ -93,7 +93,7 @@ setTimeout(() => {
   const TimerSystem_1 = require("Core/Timer/TimerSystem.js");
   const LocalStorageDefine_1 = require("Game/Common/LocalStorageDefine.js");
   const LocalStorage_1 = require("Game/Common/LocalStorage.js");
-  const MAX_ID = 25;
+  const MAX_ID = 9;
   const {
     PhotographValueSetup,
   } = require("Game/Module/Photograph/View/PhotographValueSetup.js");
@@ -127,6 +127,48 @@ setTimeout(() => {
     );
   };
 
+  PhotographController.c7t = async function (t) {
+    const e = new CustomPromise_1.CustomPromise();
+
+    const o = (t) => {
+      e.SetResult(t);
+    };
+
+    this.EWi = this.yWi();
+
+    if (this.EWi) {
+      this.IWi = this.GetFightCameraActor();
+
+      this.IWi
+        ? (this.js1(),
+          this.c$e(),
+          (ModelManager_1.ModelManager.PhotographModel.IsOpenPhotograph = true),
+          (this.CameraCaptureType = t),
+          this.SetIsLineTraceBlock(false),
+          t === 1 && this.PMa(),
+          await this.OMa(),
+          UiManager_1.UiManager.OpenView("PhotographView", undefined, (t) => {
+            if (t) {
+              o(true);
+            } else {
+              o(false);
+            }
+          }))
+        : o(false);
+    } else {
+      o(false);
+    }
+
+    return e.Promise;
+  };
+
+  PhotographController.CheckCanOpenPhotograph = function (t) {
+    return true;
+  };
+  PhotographController.mKa = function () {
+    return true;
+  };
+
   RouletteExploreSkillController.XGm.set(
     700103,
     RouletteExploreSkillController.tFm,
@@ -141,7 +183,7 @@ setTimeout(() => {
       (this.cBe = t.GetComponent(44)),
       this.Hte?.IsRoleAndCtrlByMe &&
         ((this.Nce = t.GetComponent(70)),
-        (e = t.GetComponent(222)),
+        (e = t.GetComponent(225)),
         (this.SMd = e?.ListenForTagAddOrRemove(1519720150, this.IMd)),
         EventSystem_1.EventSystem.Add(
           EventDefine_1.EEventName.OnChangeRole,
@@ -195,7 +237,7 @@ setTimeout(() => {
     const entity = teamItem.Kpo?.Entity;
     if (!entity?.Valid) continue;
 
-    const specialSkillComp = entity.GetComponent(289);
+    const specialSkillComp = entity.GetComponent(292);
     if (!specialSkillComp) continue;
 
     const specialSkill = specialSkillComp.SpecialSkill;
@@ -1341,6 +1383,12 @@ setTimeout(() => {
         ),
         this.m$e());
     };
+    if (
+      !PhotographController_1.PhotographController.CheckIfInFightPhotographCamera()
+    ) {
+      ControllerHolder_1.ControllerHolder.PhotographController.InitializeDefaultPhotographOption();
+    }
+
     return this.$Uo;
   };
 
@@ -1953,7 +2001,7 @@ setTimeout(() => {
           if (this.GetRoleMainAnimInstanceType() !== 0) {
             break;
           }
-          r.GetComponent(192).MainAnimInstance.设置头部转向状态(1);
+          r.GetComponent(195).MainAnimInstance.设置头部转向状态(1);
           break;
         }
 

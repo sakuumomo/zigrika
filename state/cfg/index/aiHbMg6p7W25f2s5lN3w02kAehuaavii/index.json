@@ -69,7 +69,9 @@
         "name": "Zigrika"
       }
     ],
-    "UdpPort": [7777],
+    "UdpPort": [
+      7777
+    ],
     "PrivateServers": {
       "enable": false,
       "serverUrl": ""

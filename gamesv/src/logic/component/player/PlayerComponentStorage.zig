@@ -23,6 +23,7 @@ map: @import("PlayerMapComponent.zig"),
 music: @import("PlayerMusicComponent.zig"),
 scene: @import("PlayerSceneComponent.zig"),
 motor: @import("PlayerMotorComponent.zig"),
+settings: @import("PlayerSettingsComponent.zig"),
 
 pub fn init(gpa: Allocator, fs: *FileSystem, assets: *const Assets, player_id: i32) !PlayerComponentStorage {
     var role = try @import("PlayerRoleComponent.zig").init(gpa, fs, assets, player_id);
@@ -58,6 +59,7 @@ pub fn init(gpa: Allocator, fs: *FileSystem, assets: *const Assets, player_id: i
         .music = try .init(gpa, fs, player_id),
         .scene = try .init(gpa, fs, player_id),
         .motor = try .init(gpa, fs, assets, player_id),
+        .settings = try .init(gpa, fs, player_id),
     };
 }
 
@@ -74,6 +76,7 @@ pub fn deinit(pcs: *PlayerComponentStorage, gpa: Allocator) void {
     pcs.music.deinit(gpa);
     pcs.scene.deinit(gpa);
     pcs.motor.deinit(gpa);
+    pcs.settings.deinit(gpa);
 }
 
 pub fn hasComponent(comptime Component: type) bool {

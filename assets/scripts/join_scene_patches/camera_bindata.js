@@ -18,6 +18,7 @@ setTimeout(() => {
     configPhotoSetupByValueType,
   } = require("../Core/Define/ConfigQuery/PhotoSetupByValueType.js");
   const { ConfigManager } = require("../Game/Manager/ConfigManager.js");
+  const Info_1 = require("../Core/Common/Info.js");
 
   const PATCHED_IDS = new Set([2, 3, 4, 5, 6, 7, 8, 9, 10]);
   const patched_cache = new Map();
@@ -76,7 +77,7 @@ setTimeout(() => {
     ),
   );
 
-  const MAX_ID = 25;
+  const MAX_ID = 9;
 
   const make_photo_setup = (buf) =>
     PhotoSetup.getRootAsPhotoSetup(new ByteBuffer(buf));
@@ -97,6 +98,7 @@ setTimeout(() => {
     is_local_storage = false,
     digits = 0,
     unit = "",
+    is_show_in_ps5 = true,
   }) => {
     const b = new Builder(512);
     const name_off = b.createString(name);
@@ -136,7 +138,7 @@ setTimeout(() => {
     b.startVector(4, opt_offs.length, 4);
     for (let i = opt_offs.length - 1; i >= 0; i--) b.addOffset(opt_offs[i]);
     const options_vec = b.endVector();
-    b.startObject(15);
+    b.startObject(16);
     b.addFieldInt32(0, id, 0);
     b.addFieldInt32(1, value_type, 0);
     b.addFieldOffset(2, name_off, 0);
@@ -152,9 +154,41 @@ setTimeout(() => {
     b.addFieldInt8(12, is_local_storage ? 1 : 0, 0);
     b.addFieldInt32(13, digits, 0);
     b.addFieldOffset(14, unit_off, 0);
+    b.addFieldInt8(15, is_show_in_ps5 ? 1 : 0, 0);
     const root = b.endObject();
     b.finish(root);
-    return make_photo_setup(b.asUint8Array());
+    return {
+      Id: id,
+      ValueType: value_type,
+      Name: name,
+      Type: type,
+      Options: [...options],
+      DefaultOptionIndex: default_option_index,
+      DefaultDropDownIndex: default_dropdown_index,
+      ValueRange: value_range ? [...value_range] : [],
+      IsReverseSet: is_reverse_set,
+      ChangeValue: change_value,
+      IsShowRedDot: is_show_red_dot,
+      IsLocalStorage: is_local_storage,
+      Digits: digits,
+      Unit: unit,
+      IsShowInPS5: is_show_in_ps5,
+      SubOptions: new Map(
+        sub_value_types
+          ? (sub_value_types instanceof Map
+              ? [...sub_value_types.entries()]
+              : Object.entries(sub_value_types).map(([k, v]) => [Number(k), v])
+            ).map(([k, v]) => [k, { ArrayInt: Array.isArray(v) ? v : [v] }])
+          : [],
+      ),
+      id: () => id,
+      valueType: () => value_type,
+      type: () => type,
+      valueRange: (i) => (value_range ?? [])[i],
+      valueRangeLength: () => (value_range ?? []).length,
+      optionsLength: () => options.length,
+      options: (i) => options[i],
+    };
   };
 
   const TOGGLE_OPTIONS = ["PhotoSetup_2_Options_0", "PhotoSetup_2_Options_1"];
@@ -164,6 +198,88 @@ setTimeout(() => {
   const TD_ID = MAX_ID + 5;
 
   const extra_entries = [
+    build_entry({
+      id: 1,
+      value_type: 0,
+      name: "PhotoSetup_1_Name",
+      type: 0,
+      options: ["PhotoSetup_1_Options_0", "PhotoSetup_1_Options_1"],
+      default_option_index: 1,
+      value_range: [0, 100, 50],
+      change_value: 0.1,
+    }),
+    build_entry({
+      id: 3,
+      value_type: 2,
+      name: "PhotoSetup_3_Name",
+      type: 0,
+      options: ["PhotoSetup_3_Options_0", "PhotoSetup_3_Options_1"],
+      default_option_index: 1,
+      value_range: [0, 100, 50],
+      change_value: 0.1,
+    }),
+    build_entry({
+      id: 4,
+      value_type: 3,
+      name: "PhotoSetup_4_Name",
+      type: 0,
+      options: ["PhotoSetup_4_Options_0", "PhotoSetup_4_Options_1"],
+      default_option_index: 0,
+      sub_value_types: { 0: [4, 5] },
+      value_range: [0, 100, 50],
+      change_value: 0.1,
+    }),
+    build_entry({
+      id: 5,
+      value_type: 4,
+      name: "PhotoSetup_5_Name",
+      type: 1,
+      value_range: [0, 500, 400],
+      change_value: 5,
+    }),
+    build_entry({
+      id: 6,
+      value_type: 5,
+      name: "PhotoSetup_6_Name",
+      type: 1,
+      value_range: [0.1, 5, 0.1],
+      is_reverse_set: true,
+      change_value: 0.1,
+    }),
+    build_entry({
+      id: 7,
+      value_type: 6,
+      name: "PhotoSetup_7_Name",
+      type: 0,
+      options: ["PhotoSetup_7_Options_0", "PhotoSetup_7_Options_1"],
+      default_option_index: 0,
+      sub_value_types: { 0: [7] },
+      value_range: [0, 100, 50],
+      change_value: 0.1,
+      is_show_red_dot: true,
+    }),
+    build_entry({
+      id: 8,
+      value_type: 7,
+      name: "PhotoSetup_8_Name",
+      type: 3,
+      value_range: [-180, 180, 0],
+      change_value: 1,
+      unit: "°",
+    }),
+    build_entry({
+      id: 9,
+      value_type: 8,
+      name: "PhotoSetup_9_Name",
+      type: 2,
+      default_option_index: 1,
+      default_dropdown_index: 1,
+      value_range: [0, 100, 50],
+      change_value: 0.1,
+      is_show_red_dot: true,
+      is_local_storage: true,
+      is_show_in_ps5: false,
+    }),
     build_entry({
       id: MAX_ID + 1,
       value_type: MAX_ID,
@@ -272,46 +388,6 @@ setTimeout(() => {
       digits: 2,
     }),
     build_entry({
-      id: 8,
-      value_type: 7,
-      name: "PhotoSetup_8_Name",
-      type: 3,
-      value_range: [-180, 180, 0],
-      change_value: 1,
-      digits: 2,
-      unit: "°",
-    }),
-    build_entry({
-      id: 4,
-      value_type: 3,
-      name: "PhotoSetup_4_Name",
-      type: 0,
-      options: ["PhotoSetup_4_Options_0", "PhotoSetup_4_Options_1"],
-      default_option_index: 0,
-      sub_value_types: { 0: [4, 5] },
-      change_value: 0.1,
-      is_local_storage: false,
-    }),
-    build_entry({
-      id: 5,
-      value_type: 4,
-      name: "PhotoSetup_5_Name",
-      type: 1,
-      value_range: [0, 1000, 400],
-      change_value: 5,
-      is_local_storage: false,
-    }),
-    build_entry({
-      id: 6,
-      value_type: 5,
-      name: "PhotoSetup_6_Name",
-      type: 1,
-      value_range: [0.1, 5, 0.1],
-      is_reverse_set: true,
-      change_value: 0.1,
-      is_local_storage: false,
-    }),
-    build_entry({
       id: MAX_ID + 12,
       value_type: MAX_ID + 11,
       name: "CUSTOM_Hide Weapon",
@@ -336,28 +412,6 @@ setTimeout(() => {
   const get_vt = (e) =>
     typeof e.valueType === "function" ? e.valueType() : e.ValueType;
 
-  configPhotoSetupByValueType.GetConfig = (
-    (orig) =>
-    (value_type, ...args) => {
-      const result = orig(value_type, ...args);
-      if (result !== undefined) return result;
-      return extra_entries.find((e) => get_vt(e) === value_type);
-    }
-  )(configPhotoSetupByValueType.GetConfig.bind(configPhotoSetupByValueType));
-
-  configPhotoSetupAll.GetConfigList = (
-    (orig) =>
-    (...args) => {
-      const list = orig(...args);
-      if (!list) return list;
-      const override_vts = new Set(extra_entries.map(get_vt));
-      return [
-        ...list.filter((x) => !override_vts.has(get_vt(x))),
-        ...extra_entries,
-      ];
-    }
-  )(configPhotoSetupAll.GetConfigList.bind(configPhotoSetupAll));
-
   const photograph_config = ConfigManager?.PhotographConfig;
 
   photograph_config.GetPhotoSetupConfig = (
@@ -373,7 +427,7 @@ setTimeout(() => {
     (orig) =>
     (...args) => {
       const list = orig(...args);
-      if (!list) return list;
+      if (!list) return extra_entries;
       const override_vts = new Set(extra_entries.map(get_vt));
       return [
         ...list.filter((x) => !override_vts.has(get_vt(x))),
@@ -381,6 +435,19 @@ setTimeout(() => {
       ];
     }
   )(photograph_config.GetAllPhotoSetupConfig.bind(photograph_config));
+
+  configPhotoSetupAll.GetConfigList = (
+    (orig) =>
+    (...args) => {
+      const list = orig(...args);
+      if (!list) return extra_entries;
+      const override_vts = new Set(extra_entries.map(get_vt));
+      return [
+        ...list.filter((x) => !override_vts.has(get_vt(x))),
+        ...extra_entries,
+      ];
+    }
+  )(configPhotoSetupAll.GetConfigList.bind(configPhotoSetupAll));
 
   const { PhotoDropDown } = require("../Core/Define/Config/PhotoDropDown");
 
@@ -460,6 +527,19 @@ setTimeout(() => {
   } = require("Game/Module/Photograph/View/PhotographDropDownSetup.js");
   const { ModelManager } = require("Game/Manager/ModelManager.js");
 
+  PhotographDropDownSetup.prototype.g8e = (e) =>
+    new LguiUtil_1.TableTextArgNew(
+      typeof e.textId === "function" ? e.textId() : e.TextId,
+    );
+
+  const orig_DropDown_Initialize = PhotographDropDownSetup.prototype.Initialize;
+  PhotographDropDownSetup.prototype.Initialize = function (e) {
+    this.SetupValueType = e;
+    this.SetupConfig = ConfigManager?.PhotographConfig?.GetPhotoSetupConfig(e);
+    this.Refresh();
+    this.BNe();
+  };
+
   PhotographDropDownSetup.prototype._bi = (function (orig) {
     return function () {
       const e = ConfigManager?.PhotographConfig?.GetPhotoDropDownDataList(
@@ -475,10 +555,6 @@ setTimeout(() => {
     };
   })(PhotographDropDownSetup.prototype._bi);
 
-  const orig_ELt_descriptor = Object.getOwnPropertyDescriptor(
-    PhotographDropDownSetup.prototype,
-    "ELt",
-  );
   const orig_OnBeforeStartAsync =
     PhotographDropDownSetup.prototype.OnBeforeStartAsync;
   PhotographDropDownSetup.prototype.OnBeforeStartAsync = async function () {
@@ -493,4 +569,13 @@ setTimeout(() => {
     };
     this.hbi.SetOnSelectCall(this.ELt);
   };
+
+  const { TutorialModel } = require("Game/Module/Tutorial/TutorialModel.js");
+
+  TutorialModel.prototype.UpdateUnlockTutorials = (function (orig) {
+    return function (e) {
+      if (e == null) return;
+      return orig.call(this, e);
+    };
+  })(TutorialModel.prototype.UpdateUnlockTutorials);
 }, 0);

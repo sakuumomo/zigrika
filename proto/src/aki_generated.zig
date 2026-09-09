@@ -5850,6 +5850,49 @@ pub const CalabashSkinTakeOnResponse = struct {
     pub const ErrorCode_field_number: u32 = 10;
     pub const SkinId_field_number: u32 = 7;
 };
+pub const CameraParamInfo = struct {
+    pub const CameraMode_field_number: u32 = 1;
+    pub const PitchValue_field_number: u32 = 2;
+    pub const YawValue_field_number: u32 = 3;
+    pub const RollValue_field_number: u32 = 4;
+    pub const PosX_field_number: u32 = 5;
+    pub const PosY_field_number: u32 = 6;
+    pub const PosZ_field_number: u32 = 7;
+    pub const Fov_field_number: u32 = 8;
+    pub const FocusDistance_field_number: u32 = 9;
+    pub const BlurRadius_field_number: u32 = 10;
+    pub const CameraTiltAngle_field_number: u32 = 11;
+    pub const Weather_field_number: u32 = 12;
+    pub const Atmosphere_field_number: u32 = 13;
+    pub const WindDirection_field_number: u32 = 14;
+};
+pub const CameraSettingInfo = struct {
+    pub const CameraParam_field_number: u32 = 1;
+};
+pub const CameraSettingQueryRequest = struct {
+    pub const msg_id: u16 = 16381;
+};
+pub const CameraSettingQueryResponse = struct {
+    pub const msg_id: u16 = 22753;
+    pub const ErrorCode_field_number: u32 = 6;
+    pub const CameraSetting_field_number: u32 = 11;
+};
+pub const CameraSettingModifyRequest = struct {
+    pub const msg_id: u16 = 18483;
+    pub const CameraSetting_field_number: u32 = 9;
+};
+pub const CameraSettingModifyResponse = struct {
+    pub const msg_id: u16 = 17786;
+    pub const ErrorCode_field_number: u32 = 7;
+};
+pub const SelfPortraitStateRequest = struct {
+    pub const msg_id: u16 = 25316;
+    pub const State_field_number: u32 = 15;
+};
+pub const SelfPortraitStateResponse = struct {
+    pub const msg_id: u16 = 25392;
+    pub const ErrorCode_field_number: u32 = 15;
+};
 pub const PrivateChatRequest = struct {
     pub const msg_id: u16 = 23483;
     pub const TargetUid_field_number: u32 = 8;
@@ -6249,6 +6292,22 @@ pub const CombatReceivePackNotify = struct {
 };
 pub const CombatMaxCaseMessageRequest = struct {
     pub const msg_id: u16 = 22467;
+};
+pub const CombatMessagePrefixInfoRequest = struct {
+    pub const msg_id: u16 = 21140;
+    pub const Id_field_number: u32 = 10;
+};
+pub const CombatMessagePrefixInfoResponse = struct {
+    pub const msg_id: u16 = 26444;
+    pub const PrefixInfo_field_number: u32 = 10;
+};
+pub const CombatMessagePostInfoRequest = struct {
+    pub const msg_id: u16 = 15505;
+    pub const PostId_field_number: u32 = 6;
+};
+pub const CombatMessagePostInfoResponse = struct {
+    pub const msg_id: u16 = 20596;
+    pub const PostInfo_field_number: u32 = 6;
 };
 pub const EntityLoadCompleteNotify = struct {
     pub const msg_id: u16 = 29145;
@@ -7730,6 +7789,9 @@ pub const CombatValDecayBeginNotify = struct {
 pub const SquadPropChangedNotify = struct {
     pub const msg_id: u16 = 21485;
     pub const Attributes_field_number: u32 = 13;
+};
+pub const ScreenShotTakenPush = struct {
+    pub const msg_id: u16 = 26905;
 };
 pub const ControlTemporaryTeleportParam = struct {
     pub const TemporaryTeleportIds_field_number: u32 = 1;
