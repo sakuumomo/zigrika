@@ -1,6 +1,6 @@
 {
   "PackageVersion": "3.7.0",
-  "ChangeList": "8706380",
+  "ChangeList": "8806380",
   "CompatibleChangeLists": [],
   "ResVersions": {
     "launcher": {
@@ -53,5 +53,5 @@
       }
     }
   },
-  "UpdateTime": 1788779015
+  "UpdateTime": 1888779015
 }
