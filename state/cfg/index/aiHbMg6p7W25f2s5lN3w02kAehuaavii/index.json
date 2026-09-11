@@ -22,6 +22,36 @@
         "weight": "0"
       }
     ],
+    "CdnScoreCfg": {
+      "UsedCandidate": "legacy_linear",
+      "Candidates": [
+        {
+          "Name": "legacy_linear",
+          "Steps": [
+            {
+              "Let": "speedScore",
+              "Op": "mul",
+              "A": "speed",
+              "B": 1
+            },
+            {
+              "Let": "priceCost",
+              "Op": "mul",
+              "A": "weight",
+              "B": 1
+            },
+            {
+              "Let": "score",
+              "Op": "sub",
+              "A": "speedScore",
+              "B": "priceCost"
+            }
+          ],
+          "Output": "score",
+          "Order": "desc"
+        }
+      ]
+    },
     "SecondaryUrl": [],
     "PriceRatio": 1,
     "SpeedRatio": 1,
