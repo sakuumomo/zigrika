@@ -569,13 +569,4 @@ setTimeout(() => {
     };
     this.hbi.SetOnSelectCall(this.ELt);
   };
-
-  const { TutorialModel } = require("Game/Module/Tutorial/TutorialModel.js");
-
-  TutorialModel.prototype.UpdateUnlockTutorials = (function (orig) {
-    return function (e) {
-      if (e == null) return;
-      return orig.call(this, e);
-    };
-  })(TutorialModel.prototype.UpdateUnlockTutorials);
 }, 0);

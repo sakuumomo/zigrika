@@ -1,20 +1,20 @@
 {
   "PackageVersion": "3.7.0",
-  "ChangeList": "8806380",
+  "ChangeList": "8779353",
   "CompatibleChangeLists": [],
   "ResVersions": {
     "launcher": {
       "Name": "launcher",
       "Version": "3.7.1",
       "IndexSha1": {
-        "3.7.1": "8F4D1F4952F198B6EE42BF3333D067A1D6FCF763"
+        "3.7.1": "A9CC5ACD4F590F452697DB9DF439A677F2D940FD"
       }
     },
     "resource": {
       "Name": "resource",
       "Version": "3.7.1",
       "IndexSha1": {
-        "3.7.1": "165364CE41C7374DDC0ED94C058034B1E134A2B8"
+        "3.7.1": "8204C45762A3FADFFA70B792B0B7175ACBB214E1"
       }
     },
     "en": {
@@ -53,5 +53,5 @@
       }
     }
   },
-  "UpdateTime": 1888779015
+  "UpdateTime": 1789119285
 }
