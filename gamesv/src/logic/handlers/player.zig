@@ -32,9 +32,9 @@ pub fn pushData(
 
     try conn.push(alloc.gpa, io, notify);
     if (basic_comp.info.cur_player_title_id > 0) {
-        try conn.push(alloc.gpa, io, pb.SetDressedPlayerTitleNotify{
+        try conn.push(alloc.gpa, io, pb.DressPlayerTitleUpdateNotify{
             .PlayerTitleId = basic_comp.info.cur_player_title_id,
-            .CurPlayerTitleId = 1, // PlayerTitleExtraParam
+            .PlayerTitleExtraParam = 1,
         });
     }
 }

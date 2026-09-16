@@ -89,7 +89,7 @@ fn syncWeaponPassiveBuffs(
                         .Id = buff_id,
                         .Level = buff_info.Level,
                         .InstigatorId = entity.net_id,
-                        .ApplyType = @intFromEnum(buff_info.ApplyType orelse .Common),
+                        .ApplyType = buff_info.ApplyType orelse .Common,
                         .ServerId = buff_info.ServerId,
                         .StackCount = buff_info.StackCount,
                         .IsIterable = true,

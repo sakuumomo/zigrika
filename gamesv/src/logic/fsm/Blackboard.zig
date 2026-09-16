@@ -88,7 +88,7 @@ pub fn getInitialFsm(
             try result.append(arena, .{
                 .FsmId = StateHierarchy.clientState(comp, runtime.fsm_id),
                 .CurrentState = StateHierarchy.clientState(comp, current_state),
-                .Flag = if (node) |entry| if (entry.IsAnimStateMachine orelse false) 1 else 0 else 0,
+                .Flag = if (node) |entry| if (entry.IsAnimStateMachine orelse false) .Confirmed else .Changed else .Changed,
                 .StateElapseTime = elapsedTime(comp.last_tick_ms, runtime.active_since_ms[runtime.active_len - 1]),
             });
         }
@@ -110,7 +110,7 @@ pub fn getInitialFsm(
         try result.append(arena, .{
             .FsmId = StateHierarchy.clientState(comp, id),
             .CurrentState = StateHierarchy.clientState(comp, active_path[active_len - 1]),
-            .Flag = if (node.IsAnimStateMachine orelse false) 1 else 0,
+            .Flag = if (node.IsAnimStateMachine orelse false) .Confirmed else .Changed,
             .StateElapseTime = 0,
         });
     }

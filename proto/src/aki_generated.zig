@@ -9435,6 +9435,10 @@ pub const PhantomConsumeItem = struct {
     pub const Count_field_number: u32 = 2;
     pub const ItemId_field_number: u32 = 3;
 };
+pub const PhantomStackConsumeEntry = struct {
+    pub const IncrId_field_number: u32 = 1;
+    pub const Count_field_number: u32 = 2;
+};
 pub const PhantomStackSplitInfo = struct {
     pub const OperateItem_field_number: u32 = 1;
     pub const OperateBeforeCount_field_number: u32 = 2;
@@ -9520,7 +9524,7 @@ pub const PhantomSkinChangeResponse = struct {
 };
 pub const PhantomRefiningRequest = struct {
     pub const msg_id: u16 = 25546;
-    pub const IncrIdList_field_number: u32 = 8;
+    pub const StackEntries_field_number: u32 = 8;
 };
 pub const PhantomRefiningResponse = struct {
     pub const msg_id: u16 = 29840;
@@ -9531,7 +9535,7 @@ pub const PhantomRefiningResponse = struct {
 };
 pub const CalabashBatchRefiningRequest = struct {
     pub const msg_id: u16 = 15619;
-    pub const IncrIdList_field_number: u32 = 13;
+    pub const StackEntries_field_number: u32 = 13;
 };
 pub const CalabashBatchRefiningResponse = struct {
     pub const msg_id: u16 = 22170;
@@ -9542,8 +9546,8 @@ pub const CalabashBatchRefiningResponse = struct {
 };
 pub const PhantomBatchDirectRefiningRequest = struct {
     pub const msg_id: u16 = 25223;
-    pub const IncrIdList_field_number: u32 = 14;
-    pub const TargetFetterGroupId_field_number: u32 = 4;
+    pub const TargetFetterGroupId_field_number: u32 = 14;
+    pub const StackEntries_field_number: u32 = 4;
 };
 pub const PhantomBatchDirectRefiningResponse = struct {
     pub const msg_id: u16 = 29320;
@@ -9616,8 +9620,8 @@ pub const PhantomFuncValueBatchResponse = struct {
 };
 pub const PhantomBatchPolishRequest = struct {
     pub const msg_id: u16 = 22703;
-    pub const IncrIds_field_number: u32 = 14;
-    pub const PhantomMainPropItemId_field_number: u32 = 5;
+    pub const PhantomMainPropItemId_field_number: u32 = 14;
+    pub const StackEntries_field_number: u32 = 5;
 };
 pub const PhantomBatchPolishResponse = struct {
     pub const msg_id: u16 = 26035;
@@ -9824,10 +9828,10 @@ pub const PlayerTitleData = struct {
     pub const StarLevel_field_number: u32 = 4;
     pub const ActivityServerRewardItemData_field_number: u32 = 5;
 };
-pub const SetDressedPlayerTitleNotify = struct {
-    pub const msg_id: u16 = 29816;
-    pub const PlayerTitleId_field_number: u32 = 11;
-    pub const CurPlayerTitleId_field_number: u32 = 2;
+pub const DressPlayerTitleUpdateNotify = struct {
+    pub const msg_id: u16 = 19326;
+    pub const PlayerTitleId_field_number: u32 = 6;
+    pub const PlayerTitleExtraParam_field_number: u32 = 2;
 };
 pub const PlayerTitleDataRequest = struct {
     pub const msg_id: u16 = 21582;

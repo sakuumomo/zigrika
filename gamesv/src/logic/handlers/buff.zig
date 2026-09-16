@@ -323,7 +323,7 @@ pub fn addBuffToEntity(
                             .Level = new_buff.Level,
                             .EntityId = new_buff.EntityId,
                             .InstigatorId = new_buff.InstigatorId,
-                            .ApplyType = if (new_buff.ApplyType) |apply_type| @intFromEnum(apply_type) else 0,
+                            .ApplyType = if (new_buff.ApplyType) |apply_type| apply_type else .Common,
                             .IsActive = new_buff.IsActive,
                             .ServerId = new_buff.ServerId,
                             .StackCount = new_buff.StackCount,

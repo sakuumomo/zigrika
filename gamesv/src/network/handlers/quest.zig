@@ -12,7 +12,7 @@ pub fn onSetFocusModeDeterConditionRequest(txn: *Transaction(pb.SetFocusModeDete
 
 pub fn onQuestBranchRequest(txn: *Transaction(pb.QuestBranchRequest)) !void {
     txn.respond(.{
-        .errorCode = @intFromEnum(pb.ErrorCode.Success),
+        .errorCode = pb.ErrorCode.Success,
         .QuestBranchInfo = .{},
     });
 }

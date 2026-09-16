@@ -5774,6 +5774,22 @@ pub const EEntityType = enum(i32) {
     PlayerEntity = 11,
     SceneEntity = 12,
 };
+pub const ERemoveEntityType = enum(i32) {
+    pub const default: @This() = @field(@This(), std.meta.fieldNames(@This())[0]);
+    RemoveTypeForce = 0,
+    HpIsZero = 1,
+    Destructible = 2,
+    RemoveTypeNormal = 3,
+    RemoveTypeCapture = 4,
+    RemoveTypeTreasureBox = 5,
+    RemoveTypeDrop = 6,
+    MonsterBoom = 7,
+    RemoveTypeResetByModeChange = 8,
+    RemoveTypSimpleCombat = 9,
+    RbBlockDestroyed = 10,
+    AllRoleDying = 11,
+    DyingTimeOut = 12,
+};
 pub const EAttributeType = enum(i32) {
     pub const default: @This() = @field(@This(), std.meta.fieldNames(@This())[0]);
     None = 0,
@@ -6001,7 +6017,7 @@ pub const CombatCommon = struct {
 pub const EntityRemoveInfo = struct {
     pub const default: @This() = .{};
     EntityId: i64 = 0,
-    Type: i32 = 0,
+    Type: ?ERemoveEntityType = null,
 };
 pub const RoleShowEntry = struct {
     pub const default: @This() = .{};
@@ -6613,10 +6629,16 @@ pub const StuckCheckCtxPb = struct {
     BehaviorTreeCtx: ?BehaviorTreeCtxPb = null,
     Index: i32 = 0,
 };
+pub const RollBlockGameActionType = enum(i32) {
+    pub const default: @This() = @field(@This(), std.meta.fieldNames(@This())[0]);
+    RbMidWayExit = 0,
+    RbPass = 1,
+    RbEnter = 2,
+};
 pub const RollBlockGamePlayActionCtxPb = struct {
     pub const default: @This() = .{};
     BehaviorTreeCtx: ?BehaviorTreeCtxPb = null,
-    ParamType: i32 = 0,
+    ParamType: ?RollBlockGameActionType = null,
 };
 pub const TransferCtxPb = struct {
     pub const default: @This() = .{};
@@ -7154,13 +7176,13 @@ pub const SignState = enum(i32) {
 };
 pub const SignActivity = struct {
     pub const default: @This() = .{};
-    SignStateList: std.ArrayList(i32) = .empty,
+    SignStateList: std.ArrayList(SignState) = .empty,
     RewardFree: bool = false,
 };
 pub const HarvestPointReward = struct {
     pub const default: @This() = .{};
     Id: i32 = 0,
-    State: i32 = 0,
+    State: ?SignState = null,
 };
 pub const HarvestLevelReward = struct {
     pub const default: @This() = .{};
@@ -7169,7 +7191,7 @@ pub const HarvestLevelReward = struct {
     IsOpen: bool = false,
     Points: i32 = 0,
     Diff: i32 = 0,
-    State: i32 = 0,
+    State: ?SignState = null,
 };
 pub const HarvestActivity = struct {
     pub const default: @This() = .{};
@@ -7183,7 +7205,7 @@ pub const NewBieCourseActivity = struct {
 pub const RoleTrialTask = struct {
     pub const default: @This() = .{};
     RoleId: i32 = 0,
-    ChallengeState: i32 = 0,
+    ChallengeState: ?ChallengeState = null,
     BeginOpenTime: i64 = 0,
     EndOpenTime: i64 = 0,
 };
@@ -7191,13 +7213,20 @@ pub const RoleTrialInfoActivity = struct {
     pub const default: @This() = .{};
     RoleTrialTask: std.ArrayList(RoleTrialTask) = .empty,
 };
+pub const PhantomCollectRewardType = enum(i32) {
+    pub const default: @This() = @field(@This(), std.meta.fieldNames(@This())[0]);
+    PhantomsCollect = 0,
+    DataDock = 1,
+    PhantomSideQuest = 2,
+    Max = 3,
+};
 pub const PhantomCollectReward = struct {
     pub const default: @This() = .{};
     Data: ?union(enum) {
         Progress: ?PhantomCollectProgress,
     } = null,
-    Type: i32 = 0,
-    State: i32 = 0,
+    Type: ?PhantomCollectRewardType = null,
+    State: ?SignState = null,
 };
 pub const PhantomCollectProgress = struct {
     pub const default: @This() = .{};
@@ -7409,10 +7438,10 @@ pub const ActivityBlackCoastData = struct {
 pub const DreamLinkActivityData = struct {
     pub const default: @This() = .{};
     MaxEnergy: i32 = 0,
-    SignStateList: std.ArrayList(i32) = .empty,
+    SignStateList: std.ArrayList(SignState) = .empty,
     RoleInstanceList: std.ArrayList(RoleInstanceList) = .empty,
     LevelPlayList: std.ArrayList(LevelPlayList) = .empty,
-    BossRewardIds: std.ArrayList(i32) = .empty,
+    BossRewardIds: std.ArrayList(SignState) = .empty,
     AllLimitTimeReward: std.ArrayList(AllLimitTimeReward) = .empty,
     ScoreMap: std.ArrayList(MapEntry(i32, i32)) = .empty,
     LimitTimeReward: i64 = 0,
@@ -7445,7 +7474,7 @@ pub const LevelPlayList = struct {
     pub const default: @This() = .{};
     Index: i32 = 0,
     LevelPlayId: i32 = 0,
-    State: i32 = 0,
+    State: ?SignState = null,
     IsUnlock: bool = false,
     UnlockTime: i64 = 0,
     PlayTime: i32 = 0,
@@ -7524,7 +7553,7 @@ pub const ThroughTrainSummaryActivityData = struct {
 pub const RoleSkinTrialContentData = struct {
     pub const default: @This() = .{};
     Id: i32 = 0,
-    ChallengeState: i32 = 0,
+    ChallengeState: ?ChallengeState = null,
 };
 pub const RoleSkinTrialActivity = struct {
     pub const default: @This() = .{};
@@ -7576,7 +7605,7 @@ pub const PermanentSeasonData = struct {
 pub const RogueResTaskData = struct {
     pub const default: @This() = .{};
     PermanentRogueData: ?PermanentRogueData = null,
-    RogueResCollectionState: std.ArrayList(MapEntry(i32, i32)) = .empty,
+    RogueResCollectionState: std.ArrayList(MapEntry(i32, SignState)) = .empty,
 };
 pub const PermanentRogueData = struct {
     pub const default: @This() = .{};
@@ -7593,7 +7622,7 @@ pub const RogueResTaskThemeData = struct {
 pub const ActivityFishingData = struct {
     pub const default: @This() = .{};
     ActivityTaskData: std.ArrayList(ActivityTask) = .empty,
-    MilestoneReward: std.ArrayList(MapEntry(i32, i32)) = .empty,
+    MilestoneReward: std.ArrayList(MapEntry(i32, SignState)) = .empty,
     LimitTimeReward: i64 = 0,
     LimitTimeEnd: i64 = 0,
     MilestoneRewardItemAccumulate: i32 = 0,
@@ -8341,7 +8370,7 @@ pub const FloroRanchSubDungeonHistoryData = struct {
     pub const default: @This() = .{};
     DataId: i32 = 0,
     MaxDays: i32 = 0,
-    MaxCoins: i32 = 0,
+    MaxCoins: i64 = 0,
 };
 pub const LifePointChallengeData = struct {
     pub const default: @This() = .{};
@@ -8461,7 +8490,7 @@ pub const FightPhotoLevelDataUpdateNotify = struct {
 pub const TaskData = struct {
     pub const default: @This() = .{};
     Id: i32 = 0,
-    Status: i32 = 0,
+    Status: ?ActivityTaskState = null,
     Progress: std.ArrayList(MapEntry(i32, i32)) = .empty,
 };
 pub const SurvivorsLevelData = struct {
@@ -9093,12 +9122,18 @@ pub const GolemCrackActivityInfo = struct {
 pub const GolemCrackLevelInfo = struct {
     pub const default: @This() = .{};
     NlC: ?union(enum) {
-        state: i32,
+        state: ?GolemCrackState,
     } = null,
     VlC: ?union(enum) {
         UnlockTime: i64,
     } = null,
     id: i32 = 0,
+};
+pub const GolemCrackState = enum(i32) {
+    pub const default: @This() = @field(@This(), std.meta.fieldNames(@This())[0]);
+    GolemCrackLocked = 0,
+    GolemCrackUnlocked = 1,
+    GolemCrackFinished = 2,
 };
 pub const EdgeRunnerActivityInfo = struct {
     pub const default: @This() = .{};
@@ -9244,7 +9279,7 @@ pub const OnlineMotorActivityData = struct {
 pub const OnlineMotorTask = struct {
     pub const default: @This() = .{};
     taskId: i32 = 0,
-    state: i32 = 0,
+    state: ?ActivityTaskState = null,
     PlayCount: i32 = 0,
     Champion: i32 = 0,
     SpeedLap: i32 = 0,
@@ -9293,6 +9328,13 @@ pub const NewbieAdventureV2ChapterPb = struct {
     RewardedRoleId: i32 = 0,
     RewardDrop: bool = false,
 };
+pub const RoverRogueGrade = enum(i32) {
+    pub const default: @This() = @field(@This(), std.meta.fieldNames(@This())[0]);
+    RoverRogueGradeB = 0,
+    RoverRogueGradeA = 1,
+    RoverRogueGradeS = 2,
+    RoverRogueGradeSSS = 3,
+};
 pub const RoverRogueInsEntry = struct {
     pub const default: @This() = .{};
     instId: i32 = 0,
@@ -9301,7 +9343,7 @@ pub const RoverRogueInsEntry = struct {
     ExpectedTimeMinSec: i32 = 0,
     ExpectedTimeMaxSec: i32 = 0,
     Unlocked: bool = false,
-    BestGrade: i32 = 0,
+    BestGrade: ?RoverRogueGrade = null,
 };
 pub const RoverRogueActivityData = struct {
     pub const default: @This() = .{};
@@ -9373,6 +9415,13 @@ pub const MatchThreeLevelInfo = struct {
     UnlockTime: i64 = 0,
     FirstPass: bool = false,
 };
+pub const DetectionType = enum(i32) {
+    pub const default: @This() = @field(@This(), std.meta.fieldNames(@This())[0]);
+    NormalMonster = 0,
+    Dungeon = 1,
+    SilentArea = 2,
+    Material = 3,
+};
 pub const AdventreTask = struct {
     pub const default: @This() = .{};
     Id: i32 = 0,
@@ -9406,7 +9455,7 @@ pub const AdventureRewardData = struct {
 pub const DetectionTarget = struct {
     pub const default: @This() = .{};
     Id: i32 = 0,
-    Type: i32 = 0,
+    Type: ?DetectionType = null,
     UnlockState: bool = false,
     RefresherTime: i64 = 0,
     DetectionId: i32 = 0,
@@ -9421,7 +9470,7 @@ pub const DetectionUnlock = struct {
 pub const SelectDetectionTarget = struct {
     pub const default: @This() = .{};
     DetectionId: i32 = 0,
-    Type: i32 = 0,
+    Type: ?DetectionType = null,
     Id: i32 = 0,
     IsTrace: i32 = 0,
 };
@@ -10124,11 +10173,17 @@ pub const BattlePassType = enum(i32) {
     Free = 0,
     Pay = 1,
 };
+pub const BattlePassPayStatus = enum(i32) {
+    pub const default: @This() = @field(@This(), std.meta.fieldNames(@This())[0]);
+    NoPaid = 0,
+    Paid = 1,
+    Advanced = 2,
+};
 pub const PbBattlePassReward = struct {
     pub const default: @This() = .{};
     Level: i32 = 0,
     ItemId: i32 = 0,
-    Type: i32 = 0,
+    Type: ?BattlePassType = null,
 };
 pub const PbBattlePassRecurringReward = struct {
     pub const default: @This() = .{};
@@ -10143,7 +10198,7 @@ pub const PbBattlePass = struct {
     Level: i32 = 0,
     Exp: i32 = 0,
     WeeklyTotalExp: i32 = 0,
-    PayStatus: i32 = 0,
+    PayStatus: ?BattlePassPayStatus = null,
     TakenRewards: std.ArrayList(PbBattlePassReward) = .empty,
     BeginTime: i64 = 0,
     EndTime: i64 = 0,
@@ -10183,7 +10238,7 @@ pub const NodeInfo = struct {
     ExtraInfo: ?union(enum) {
         ChildQuestNodeInfo: ?ChildQuestNodeInfo,
     } = null,
-    Status: i32 = 0,
+    Status: ?NodeStatus = null,
 };
 pub const TreeInfo = struct {
     pub const default: @This() = .{};
@@ -10629,7 +10684,7 @@ pub const SysBuffInformation = struct {
     InstigatorId: i64 = 0,
     Duration: f32 = 0,
     StackCount: i32 = 0,
-    ApplyType: i32 = 0,
+    ApplyType: ?ApplyGEType = null,
     IsIterable: bool = false,
 };
 pub const FightBuffComponentPb = struct {
@@ -11759,7 +11814,7 @@ pub const ApplyGameplayEffectRequest = struct {
     Id: i64 = 0,
     Level: i32 = 0,
     InstigatorId: i64 = 0,
-    ApplyType: i32 = 0,
+    ApplyType: ?ApplyGEType = null,
     ServerId: i32 = 0,
     StackCount: i32 = 0,
     IsActive: bool = false,
@@ -11773,7 +11828,7 @@ pub const ApplyGameplayEffectPush = struct {
     Id: i64 = 0,
     Level: i32 = 0,
     InstigatorId: i64 = 0,
-    ApplyType: i32 = 0,
+    ApplyType: ?ApplyGEType = null,
     ServerId: i32 = 0,
     StackCount: i32 = 0,
     IsActive: bool = false,
@@ -11797,7 +11852,7 @@ pub const ApplyGameplayEffectNotify = struct {
     Level: i32 = 0,
     EntityId: i64 = 0,
     InstigatorId: i64 = 0,
-    ApplyType: i32 = 0,
+    ApplyType: ?ApplyGEType = null,
     IsActive: bool = false,
     ServerId: i32 = 0,
     StackCount: i32 = 0,
@@ -11836,7 +11891,7 @@ pub const OrderApplyBuffRequest = struct {
     Id: i64 = 0,
     Level: i32 = 0,
     InstigatorId: i64 = 0,
-    ApplyType: i32 = 0,
+    ApplyType: ?ApplyGEType = null,
     ServerId: i32 = 0,
     StackCount: i32 = 0,
     IsIterable: bool = false,
@@ -11866,7 +11921,7 @@ pub const OrderApplyBuffNotify = struct {
     Id: i64 = 0,
     Level: i32 = 0,
     InstigatorId: i64 = 0,
-    ApplyType: i32 = 0,
+    ApplyType: ?ApplyGEType = null,
     ServerId: i32 = 0,
     StackCount: i32 = 0,
     IsIterable: bool = false,
@@ -11884,7 +11939,7 @@ pub const ApplyBuffS2cRequestNotify = struct {
     Id: i64 = 0,
     Level: i32 = 0,
     InstigatorId: i64 = 0,
-    ApplyType: i32 = 0,
+    ApplyType: ?ApplyGEType = null,
     ServerId: i32 = 0,
     StackCount: i32 = 0,
     IsIterable: bool = false,
@@ -12095,7 +12150,7 @@ pub const DFsm = struct {
     pub const default: @This() = .{};
     FsmId: i32 = 0,
     CurrentState: i32 = 0,
-    Flag: i32 = 0,
+    Flag: ?EFsmStateFlag = null,
     StateElapseTime: i32 = 0,
 };
 pub const EntityFsmComponentPb = struct {
@@ -12105,6 +12160,11 @@ pub const EntityFsmComponentPb = struct {
     CommonHashCode: i32 = 0,
     BlackBoard: std.ArrayList(DFsmBlackBoard) = .empty,
     FsmCustomBlackboardDatas: ?FsmCustomBlackboardDatas = null,
+};
+pub const EFsmStateFlag = enum(i32) {
+    pub const default: @This() = @field(@This(), std.meta.fieldNames(@This())[0]);
+    Changed = 0,
+    Confirmed = 1,
 };
 pub const FsmConditionPassRequest = struct {
     pub const default: @This() = .{};
@@ -12691,9 +12751,14 @@ pub const CameraSettingModifyResponse = struct {
     pub const default: @This() = .{};
     ErrorCode: ?ErrorCode = null,
 };
+pub const SelfPortraitOpState = enum(i32) {
+    pub const default: @This() = @field(@This(), std.meta.fieldNames(@This())[0]);
+    SelfPortraitEnter = 0,
+    SelfPortraitExit = 1,
+};
 pub const SelfPortraitStateRequest = struct {
     pub const default: @This() = .{};
-    State: i32 = 0,
+    State: ?SelfPortraitOpState = null,
 };
 pub const SelfPortraitStateResponse = struct {
     pub const default: @This() = .{};
@@ -13361,7 +13426,7 @@ pub const RemoveSummonEntityRequest = struct {
     pub const default: @This() = .{};
     SummonerId: i64 = 0,
     SkillId: i32 = 0,
-    RemoveType: i32 = 0,
+    RemoveType: ?ERemoveEntityType = null,
     RemoveENtityIds: std.ArrayList(i64) = .empty,
 };
 pub const RemoveSummonEntityResponse = struct {
@@ -13723,7 +13788,7 @@ pub const EEndSkillReason = enum(i32) {
 pub const InterruptSkillInfo = struct {
     pub const default: @This() = .{};
     EntityId: i64 = 0,
-    SkillId: i32 = 0,
+    SkillId: i64 = 0,
     BulletId: i64 = 0,
 };
 pub const EndSkillRequest = struct {
@@ -13961,7 +14026,7 @@ pub const DamageSourceType = enum(i32) {
 pub const DamageContext = struct {
     pub const default: @This() = .{};
     Source: ?union(enum) {
-        SourceType: i32,
+        SourceType: ?DamageSourceType,
     } = null,
     Bullet: ?union(enum) {
         BulletId: i64,
@@ -14017,7 +14082,7 @@ pub const DamageExecuteNotify = struct {
     ShieldCoverDamage: i32 = 0,
     SkillLevel: i32 = 0,
     DamageContext: ?DamageContext = null,
-    ImmuneType: i32 = 0,
+    ImmuneType: ?EDamageImmune = null,
     ElementType: i32 = 0,
     ChangeLife: i32 = 0,
     ChangeWeakness: i32 = 0,
@@ -14163,15 +14228,15 @@ pub const SwitchCharacterStateRequest = struct {
     pub const default: @This() = .{};
     CombatCommon: ?CombatCommon = null,
     Id: i64 = 0,
-    OldState: i32 = 0,
-    NewState: i32 = 0,
+    OldState: ?EntityState = null,
+    NewState: ?EntityState = null,
 };
 pub const SwitchCharacterStatePush = struct {
     pub const default: @This() = .{};
     CombatCommon: ?CombatCommon = null,
     Id: i64 = 0,
-    OldState: i32 = 0,
-    NewState: i32 = 0,
+    OldState: ?EntityState = null,
+    NewState: ?EntityState = null,
 };
 pub const SwitchCharacterStateResponse = struct {
     pub const default: @This() = .{};
@@ -14181,8 +14246,8 @@ pub const SwitchCharacterStateNotify = struct {
     pub const default: @This() = .{};
     CombatCommon: ?CombatCommon = null,
     Id: i64 = 0,
-    OldState: i32 = 0,
-    NewState: i32 = 0,
+    OldState: ?EntityState = null,
+    NewState: ?EntityState = null,
 };
 pub const BattleStateChangeRequest = struct {
     pub const default: @This() = .{};
@@ -14750,7 +14815,7 @@ pub const ControlParam = struct {
     Param: ?union(enum) {
         TemporaryTeleportParam: ?ControlTemporaryTeleportParam,
     } = null,
-    ControlType: i32 = 0,
+    ControlType: ?ControlType = null,
 };
 pub const ControlInfoNotify = struct {
     pub const default: @This() = .{};
@@ -15634,7 +15699,7 @@ pub const InfrV2FirePb = struct {
     FireExp: i64 = 0,
     FireLevel: i32 = 0,
     FireLevelReachTime: i64 = 0,
-    FireStatus: i32 = 0,
+    FireStatus: ?InfrV2StatusPb = null,
 };
 pub const InfrV2TreePb = struct {
     pub const default: @This() = .{};
@@ -15644,10 +15709,16 @@ pub const InfrV2TreePb = struct {
 pub const InfrV2OneTree = struct {
     pub const default: @This() = .{};
     TreeId: i32 = 0,
-    status: i32 = 0,
+    status: ?InfrV2StatusPb = null,
     CompleteTime: i64 = 0,
     TotalGiftCount: i64 = 0,
     LastGiftTime: i64 = 0,
+};
+pub const InfrV2StatusPb = enum(i32) {
+    pub const default: @This() = @field(@This(), std.meta.fieldNames(@This())[0]);
+    InfrV2StatusLock = 0,
+    InfrV2StatusProgress = 1,
+    InfrV2StatusComplete = 2,
 };
 pub const InstDataNotify = struct {
     pub const default: @This() = .{};
@@ -16423,7 +16494,7 @@ pub const PayShopItem = struct {
     EndTime: i64 = 0,
     BeginPromotionTime: i64 = 0,
     EndPromotionTime: i64 = 0,
-    UpdateType: i32 = 0,
+    UpdateType: ?PayUpdateType = null,
     UpdateTime: ?PayUpdateType = null,
     ShopItemType: ?PayShopItemType = null,
     TagBeginTime: i64 = 0,
@@ -16623,6 +16694,11 @@ pub const PhantomConsumeItem = struct {
     Count: i32 = 0,
     ItemId: i32 = 0,
 };
+pub const PhantomStackConsumeEntry = struct {
+    pub const default: @This() = .{};
+    IncrId: i32 = 0,
+    Count: i32 = 0,
+};
 pub const PhantomStackSplitInfo = struct {
     pub const default: @This() = .{};
     OperateItem: ?PhantomItem = null,
@@ -16710,7 +16786,7 @@ pub const PhantomSkinChangeResponse = struct {
 };
 pub const PhantomRefiningRequest = struct {
     pub const default: @This() = .{};
-    IncrIdList: std.ArrayList(i32) = .empty,
+    StackEntries: std.ArrayList(PhantomStackConsumeEntry) = .empty,
 };
 pub const PhantomRefiningResponse = struct {
     pub const default: @This() = .{};
@@ -16721,7 +16797,7 @@ pub const PhantomRefiningResponse = struct {
 };
 pub const CalabashBatchRefiningRequest = struct {
     pub const default: @This() = .{};
-    IncrIdList: std.ArrayList(i32) = .empty,
+    StackEntries: std.ArrayList(PhantomStackConsumeEntry) = .empty,
 };
 pub const CalabashBatchRefiningResponse = struct {
     pub const default: @This() = .{};
@@ -16732,8 +16808,8 @@ pub const CalabashBatchRefiningResponse = struct {
 };
 pub const PhantomBatchDirectRefiningRequest = struct {
     pub const default: @This() = .{};
-    IncrIdList: std.ArrayList(i32) = .empty,
     TargetFetterGroupId: i32 = 0,
+    StackEntries: std.ArrayList(PhantomStackConsumeEntry) = .empty,
 };
 pub const PhantomBatchDirectRefiningResponse = struct {
     pub const default: @This() = .{};
@@ -16820,8 +16896,8 @@ pub const PhantomFuncValueBatchResponse = struct {
 };
 pub const PhantomBatchPolishRequest = struct {
     pub const default: @This() = .{};
-    IncrIds: std.ArrayList(i32) = .empty,
     PhantomMainPropItemId: i32 = 0,
+    StackEntries: std.ArrayList(PhantomStackConsumeEntry) = .empty,
 };
 pub const PhantomBatchPolishResponse = struct {
     pub const default: @This() = .{};
@@ -17041,10 +17117,10 @@ pub const PlayerTitleData = struct {
     StarLevel: i32 = 0,
     ActivityServerRewardItemData: ?ConditionTask = null,
 };
-pub const SetDressedPlayerTitleNotify = struct {
+pub const DressPlayerTitleUpdateNotify = struct {
     pub const default: @This() = .{};
     PlayerTitleId: i32 = 0,
-    CurPlayerTitleId: i32 = 0,
+    PlayerTitleExtraParam: i32 = 0,
 };
 pub const PlayerTitleDataRequest = struct {
     pub const default: @This() = .{};
@@ -17242,7 +17318,7 @@ pub const QuestBranchRequest = struct {
 };
 pub const QuestBranchResponse = struct {
     pub const default: @This() = .{};
-    errorCode: i32 = 0,
+    errorCode: ?ErrorCode = null,
     QuestBranchInfo: ?QuestBranchInfo = null,
 };
 pub const RangeType = enum(i32) {
@@ -17322,7 +17398,7 @@ pub const AliveStatusNotify = struct {
 };
 pub const BtBloodBathedModeInfo = struct {
     pub const default: @This() = .{};
-    BtType: i32 = 0,
+    BtType: ?BtType = null,
     BtObjId: i32 = 0,
     BtObjSetting: i32 = 0,
 };
@@ -17477,7 +17553,7 @@ pub const SheriffZoneInfoRequest = struct {
 };
 pub const SheriffZoneInfoResponse = struct {
     pub const default: @This() = .{};
-    errorCode: i32 = 0,
+    errorCode: ?ErrorCode = null,
     ZoneInfos: std.ArrayList(SheriffZoneInfo) = .empty,
 };
 pub const ShortMessageInfo = struct {
@@ -17696,7 +17772,7 @@ pub const WeeklyPlayData = struct {
         FloroFarmPlayData: ?FloroFarmPlayData,
     } = null,
     id: i32 = 0,
-    type: i32 = 0,
+    type: ?ActivityType = null,
 };
 pub const RogueWeeklyPlayData = struct {
     pub const default: @This() = .{};

@@ -327,7 +327,7 @@ pub fn onPhantomBatchPolishRequest(
     io: std.Io,
 ) !void {
     const now_ms = (std.Io.Clock.awake).now(io).toMilliseconds();
-    if (txn.message.IncrIds.items.len == 0) {
+    if (txn.message.StackEntries.items.len == 0) {
         txn.respond(.{ .ErrorCode = .ErrPhantomBatchPolishCount });
         return;
     }
@@ -338,7 +338,8 @@ pub fn onPhantomBatchPolishRequest(
     defer changed_roles.deinit(alloc.gpa);
     var update_infos: std.ArrayList(pb.PhantomItem) = .empty;
 
-    for (txn.message.IncrIds.items) |inc_id| {
+    for (txn.message.StackEntries.items) |stack| {
+        const inc_id = stack.IncrId;
         if (seen.contains(inc_id)) {
             txn.respond(.{ .ErrorCode = .ErrPhantomBatchPolishDuplicate });
             return;

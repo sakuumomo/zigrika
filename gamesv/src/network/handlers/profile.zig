@@ -96,9 +96,9 @@ pub fn onChangePlayerTitleRequest(
     if (txn.message.PlayerTitleId == 0 or assets.tables.player_title.getDataById(txn.message.PlayerTitleId) != null) {
         basic_comp.info.cur_player_title_id = txn.message.PlayerTitleId;
         try saveBasicInfo(fs, alloc.arena, basic_comp);
-        try txn.conn.push(alloc.gpa, io, pb.SetDressedPlayerTitleNotify{
+        try txn.conn.push(alloc.gpa, io, pb.DressPlayerTitleUpdateNotify{
             .PlayerTitleId = txn.message.PlayerTitleId,
-            .CurPlayerTitleId = if (txn.message.PlayerTitleId == 0) 0 else 1, // PlayerTitleExtraParam
+            .PlayerTitleExtraParam = if (txn.message.PlayerTitleId == 0) 0 else 1,
         });
     }
 

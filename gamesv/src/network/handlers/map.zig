@@ -337,7 +337,7 @@ pub fn onInfrV2InfoRequest(
     for (assets.tables.infr_v2_tree_build.items) |cfg| {
         try tree_list.append(alloc.arena, .{
             .TreeId = cfg.Id,
-            .status = 2, // Proto_InfrV2StatusComplete
+            .status = .InfrV2StatusComplete,
             .CompleteTime = 0,
         });
     }
@@ -346,7 +346,7 @@ pub fn onInfrV2InfoRequest(
         .FireExp = 0,
         .FireLevel = 1,
         .FireLevelReachTime = 0,
-        .FireStatus = 2, // Proto_InfrV2StatusComplete
+        .FireStatus = .InfrV2StatusComplete,
     };
 
     const infr_data = pb.InfrV2Pb{
