@@ -7720,6 +7720,16 @@ pub const SwitchRoleResponse = struct {
     pub const ErrorCode_field_number: u32 = 6;
     pub const RoleId_field_number: u32 = 13;
 };
+pub const SwitchRoleNotify = struct {
+    pub const msg_id: u16 = 21436;
+    transform: ?union(enum) {
+    } = null,
+    pub const Transform_field_number: u32 = 7;
+    pub const PlayerId_field_number: u32 = 8;
+    pub const UpEntityId_field_number: u32 = 14;
+    pub const DownEntityId_field_number: u32 = 2;
+    pub const OnStageWithoutControl_field_number: u32 = 1;
+};
 pub const RoleGoDownPush = struct {
     pub const msg_id: u16 = 21463;
 };

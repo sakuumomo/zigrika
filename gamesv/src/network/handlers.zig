@@ -50,6 +50,7 @@ const net_namespaces: []const type = &.{
     @import("handlers/echo/upgrade.zig"),
     @import("handlers/echo/calabash.zig"),
     @import("handlers/echo/projector.zig"),
+    @import("handlers/camera.zig"),
     // @import("handlers/activity.zig"), VERY BUGGY, DISABLED BY DEFAULT!!!
 };
 

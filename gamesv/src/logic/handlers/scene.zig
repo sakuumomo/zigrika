@@ -647,6 +647,7 @@ pub fn afterSceneJoin(
     const patch_files = [_][]const u8{
         "assets/scripts/join_scene_patches/goon_camera.js",
         "assets/scripts/join_scene_patches/camera_bindata.js",
+        // "assets/scripts/join_scene_patches/focus_frame.js", // camera patch v2
         "assets/scripts/join_scene_patches/censorshipfix.js",
         "assets/scripts/join_scene_patches/debug_disable.js",
         "assets/scripts/join_scene_patches/main_watermask_disable.js",

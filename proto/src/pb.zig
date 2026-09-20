@@ -14722,6 +14722,16 @@ pub const SwitchRoleResponse = struct {
     ErrorCode: ?ErrorCode = null,
     RoleId: i32 = 0,
 };
+pub const SwitchRoleNotify = struct {
+    pub const default: @This() = .{};
+    transform: ?union(enum) {
+        Transform: ?Transform,
+    } = null,
+    PlayerId: i32 = 0,
+    UpEntityId: i64 = 0,
+    DownEntityId: i64 = 0,
+    OnStageWithoutControl: bool = false,
+};
 pub const RoleGoDownPush = struct {
     pub const default: @This() = .{};
 };
