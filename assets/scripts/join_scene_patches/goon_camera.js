@@ -1219,6 +1219,28 @@ setTimeout(() => {
       }
     };
 
+    const CustomCamRotate = (_, e) => {
+      if (e === 0) return;
+      if (UiManager_1.UiManager.IsViewShow("PhotographSetupView")) return;
+      if (UiManager_1.UiManager.IsViewShow("PhotoSaveView")) return;
+
+      const tiltOn =
+        ModelManager_1.ModelManager.PhotographModel.GetPhotographOption(6);
+      if (!tiltOn || tiltOn === 0) {
+        ModelManager_1.ModelManager.PhotographModel.SetPhotographOption(6, 1);
+      }
+
+      const currentRoll =
+        ModelManager_1.ModelManager.PhotographModel.GetPhotographOption(7) ?? 0;
+      const newRoll = currentRoll + e;
+      const clamped = Math.max(-180, Math.min(180, newRoll));
+
+      ControllerHolder_1.ControllerHolder.PhotographController.SetPhotographOption(
+        7,
+        clamped,
+      );
+    };
+
     photographer.ReceiveTick = function (deltaTime) {
       this.RefreshCameraArm();
     };
@@ -1299,6 +1321,10 @@ setTimeout(() => {
         InputDistributeController_1.InputDistributeController.BindAction(
           InputMappingsDefine_1.actionMappings.UI键盘数字2手柄左,
           ChatOpen,
+        ),
+        InputDistributeController_1.InputDistributeController.BindAxis(
+          InputMappingsDefine_1.axisMappings.UiCamRotate,
+          CustomCamRotate,
         ));
     };
     PhotographController.OnRemoveEvents();
@@ -1380,6 +1406,10 @@ setTimeout(() => {
         InputDistributeController_1.InputDistributeController.UnBindAction(
           InputMappingsDefine_1.actionMappings.UI键盘数字2手柄左,
           ChatOpen,
+        ),
+        InputDistributeController_1.InputDistributeController.UnBindAxis(
+          InputMappingsDefine_1.axisMappings.UiCamRotate,
+          CustomCamRotate,
         ),
         this.m$e());
     };
@@ -1860,15 +1890,18 @@ setTimeout(() => {
     h.SetUIActive(true);
     const o = [];
 
+    const r = Info_1.Info.PlatformType === 8;
+
     const sorted = [...t].sort((a, b) => {
       const a_id = typeof a.id === "function" ? a.id() : a.Id;
       const b_id = typeof b.id === "function" ? b.id() : b.Id;
       return a_id - b_id;
     });
 
-    for (const r of sorted) {
-      if (r.ValueType !== 2 || this.Tfm === 0) {
-        o.push(this.gQi(r.ValueType, r.Type));
+    for (const a of sorted) {
+      if ((a.ValueType !== 2 || this.Tfm === 0) && (!r || a.IsShowInPS5)) {
+        const a_id = typeof a.id === "function" ? a.id() : a.Id;
+        o.push(this.gQi(a_id, a.ValueType, a.Type));
       }
     }
     await Promise.all(o);
@@ -1944,6 +1977,7 @@ setTimeout(() => {
   ControllerHolder_1.ControllerHolder.PhotographController.SetPhotographOption =
     function (t, e, o = !1) {
       var i = ModelManager_1.ModelManager.PhotographModel;
+      const prev_roll = i.GetPhotographOption(7);
       switch ((i.SetPhotographOption(t, e), t)) {
         case 3:
           1 === e
@@ -2024,12 +2058,37 @@ setTimeout(() => {
         case 7: {
           r =
             ModelManager_1.ModelManager.PhotographModel.GetPhotographerStructure();
-          if (!r) {
-            break;
-          }
+          if (!r) break;
+
+          const movement_style =
+            ModelManager_1.ModelManager.PhotographModel.GetPhotographOption(
+              MAX_ID + 8,
+            );
 
           if (i.GetPhotographOption(6) === 1) {
-            r.SetCameraArmRoll(e < 0 ? e + 360 : e);
+            if (movement_style === 5) {
+              const cam = r.$Uo;
+              if (cam) {
+                const roll_delta = e - (prev_roll ?? 0);
+                cam.TmpRotator.DeepCopy(
+                  cam.CapsuleCollision.K2_GetComponentRotation(),
+                );
+                cam.TmpRotator.Quaternion(cam.TmpQuat);
+                cam.TmpRotator2.Set(0, 0, roll_delta);
+                cam.TmpRotator2.Quaternion(cam.TmpQuat2);
+                cam.TmpQuat.Multiply(cam.TmpQuat2, cam.TmpQuat3);
+                cam.TmpQuat.DeepCopy(cam.TmpQuat3);
+                cam.TmpQuat.Rotator(cam.TmpRotator);
+                cam.CapsuleCollision.K2_SetRelativeRotation(
+                  cam.TmpRotator.ToUeRotator(),
+                  false,
+                  void 0,
+                  false,
+                );
+              }
+            } else {
+              r.SetCameraArmRoll(e < 0 ? e + 360 : e);
+            }
           } else if (!o) {
             if (Log_1.Log.CheckError()) {
               Log_1.Log.Error(
@@ -2039,7 +2098,6 @@ setTimeout(() => {
               );
             }
           }
-
           break;
         }
         case MAX_ID:

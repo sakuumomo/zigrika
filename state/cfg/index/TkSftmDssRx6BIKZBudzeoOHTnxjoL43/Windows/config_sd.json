@@ -1,0 +1,49 @@
+{
+  "PackageVersion": "3.7.0",
+  "ChangeList": "8985901",
+  "CompatibleChangeLists": [],
+  "ResVersions": {
+    "launcher": {
+      "Name": "launcher",
+      "Version": "3.7.0",
+      "IndexSha1": {}
+    },
+    "resource": {
+      "Name": "resource",
+      "Version": "3.7.12",
+      "IndexSha1": {
+        "3.7.1": "99138F1C24E83E5EF8BF988E1C63BDEB4357DA41",
+        "3.7.2": "399E84FDEE75224323D6E14F1A358A3DDDAB4117",
+        "3.7.3": "B981A1B6FC74AFA42BEC7965B57BDF62587E46DF",
+        "3.7.4": "7EA9344333B74EADF72101597D09E138FF36BEE8",
+        "3.7.5": "2D2ECDE96A87135E82B35342DC1C167BEE5A9DB0",
+        "3.7.6": "6F4597576CA1327D718CCDC25206CCE2155B1C60",
+        "3.7.7": "8DFCA59E8A16C1AAAB27FFCE40C14A841001C127",
+        "3.7.10": "B884BAC0842CC137DBF9F61065CD369F8A18B8C1",
+        "3.7.11": "AA753B82A5C1CB04904C9F7762929C35D3258B84",
+        "3.7.12": "D1D3A37163E2E9717E08A3A7025FAF00EE95EAF3"
+      }
+    },
+    "en": {
+      "Name": "en",
+      "Version": "3.7.0",
+      "IndexSha1": {}
+    },
+    "ja": {
+      "Name": "ja",
+      "Version": "3.7.0",
+      "IndexSha1": {}
+    },
+    "ko": {
+      "Name": "ko",
+      "Version": "3.7.0",
+      "IndexSha1": {}
+    },
+    "zh": {
+      "Name": "zh",
+      "Version": "3.7.0",
+      "IndexSha1": {}
+    }
+  },
+  "UpdateTime": 1791025437
+}
