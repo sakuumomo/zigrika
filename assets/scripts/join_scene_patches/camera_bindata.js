@@ -569,4 +569,14 @@ setTimeout(() => {
     };
     this.hbi.SetOnSelectCall(this.ELt);
   };
+
+  const extra_entries_by_id = new Map(extra_entries.map((e) => [e.Id, e]));
+
+  photograph_config.GetPhotoSetupConfigById = (
+    (orig) =>
+    (id, ...args) => {
+      if (extra_entries_by_id.has(id)) return extra_entries_by_id.get(id);
+      return orig(id, ...args);
+    }
+  )(photograph_config.GetPhotoSetupConfigById.bind(photograph_config));
 }, 0);
